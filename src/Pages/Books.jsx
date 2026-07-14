@@ -4,11 +4,16 @@ import BookTable from "../components/BookTable/BookTable";
 import "./Books.css";
 
 function Books() {
+
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("");
+  const [search, setSearch] = useState(
+  sessionStorage.getItem("search") || ""
+);
+  const [sort, setSort] = useState(
+  sessionStorage.getItem("sort") || ""
+);
   const [lastUpdated, setLastUpdated] = useState("");
 
   // Favorites
@@ -21,53 +26,76 @@ function Books() {
 
   useEffect(() => {
     document.title = "BookVerse | Books";
+    sessionStorage.setItem("lastPage", "/books");
     fetchBooks();
   }, []);
 
   // Fetch Books
   function fetchBooks() {
+
     setLoading(true);
     setError("");
 
     fetch("https://openlibrary.org/search.json?q=programming&limit=20")
       .then((response) => {
+
         if (!response.ok) {
           throw new Error("Failed to fetch books");
         }
+
         return response.json();
+
       })
       .then((data) => {
-        setBooks(data.docs || []);
+
+        const apiBooks = data.docs || [];
+
+        const localBooks =
+          JSON.parse(localStorage.getItem("myBooks")) || [];
+
+        setBooks([...localBooks, ...apiBooks]);
+
         setLastUpdated(new Date().toLocaleTimeString());
+
         setLoading(false);
+
       })
       .catch((error) => {
+
         console.error(error);
+
         setError(error.message);
+
         setLoading(false);
+
       });
+
   }
 
-  // Refresh
   function refreshBooks() {
     fetchBooks();
   }
 
   // Save Favorites
   useEffect(() => {
+
     localStorage.setItem(
       "favorites",
       JSON.stringify(favorites)
     );
+
   }, [favorites]);
 
-  // Load Recently Viewed
+  // Recently Viewed
   useEffect(() => {
+
     const loadRecentBooks = () => {
+
       const recent =
         JSON.parse(localStorage.getItem("recentBooks")) || [];
 
       setRecentBooks(recent);
+
     };
 
     loadRecentBooks();
@@ -77,15 +105,15 @@ function Books() {
     return () => {
       window.removeEventListener("focus", loadRecentBooks);
     };
-  }, []);
 
-  // Search by Title OR Author
+  }, []);
+    // Search
   let filteredBooks = books.filter((book) => {
     const title = (book.title || "").toLowerCase();
 
     const author = book.author_name
       ? book.author_name.join(", ").toLowerCase()
-      : "";
+      : (book.author || "").toLowerCase();
 
     return (
       title.includes(search.toLowerCase()) ||
@@ -93,16 +121,16 @@ function Books() {
     );
   });
 
-  // Sorting
+  // Sort
   if (sort === "az") {
     filteredBooks.sort((a, b) =>
-      a.title.localeCompare(b.title)
+      (a.title || "").localeCompare(b.title || "")
     );
   }
 
   if (sort === "za") {
     filteredBooks.sort((a, b) =>
-      b.title.localeCompare(a.title)
+      (b.title || "").localeCompare(a.title || "")
     );
   }
 
@@ -124,47 +152,75 @@ function Books() {
 
   // Favorite
   function toggleFavorite(key) {
+
     if (favorites.includes(key)) {
+
       setFavorites(
         favorites.filter((item) => item !== key)
       );
+
     } else {
+
       setFavorites([...favorites, key]);
+
     }
+
   }
 
   // Delete
   function deleteBook(key) {
+
     if (window.confirm("Delete this book?")) {
-      setBooks(
-        books.filter((book) => book.key !== key)
+
+      setBooks((prevBooks) =>
+        prevBooks.filter((book) => book.key !== key)
       );
+
+      const localBooks =
+        JSON.parse(localStorage.getItem("myBooks")) || [];
+
+      const updatedLocalBooks = localBooks.filter(
+        (book) => book.key !== key
+      );
+
+      localStorage.setItem(
+        "myBooks",
+        JSON.stringify(updatedLocalBooks)
+      );
+
     }
+
   }
 
   // Clear Recently Viewed
   function clearRecentBooks() {
+
     localStorage.removeItem("recentBooks");
+
     setRecentBooks([]);
+
   }
 
   if (loading) {
+
     return (
       <h1 className="recent-title">
         Loading Books...
       </h1>
     );
+
   }
 
   if (error) {
+
     return (
       <h1 className="empty">
         {error}
       </h1>
     );
-  }
 
-  return (
+  }
+    return (
     <div className="books-page">
 
       <h1>Our Books</h1>
@@ -175,9 +231,16 @@ function Books() {
         className="search-box"
         placeholder="Search by Title or Author..."
         value={search}
-        onChange={(e) =>
-          setSearch(e.target.value)
-        }
+        onChange={(e) => {
+
+        setSearch(e.target.value);
+
+        sessionStorage.setItem(
+          "search",
+          e.target.value
+        );
+
+      }}
       />
 
       {/* Refresh */}
@@ -186,9 +249,7 @@ function Books() {
         onClick={refreshBooks}
         disabled={loading}
       >
-        {loading
-          ? "Loading..."
-          : "🔄 Refresh Books"}
+        {loading ? "Loading..." : "🔄 Refresh Books"}
       </button>
 
       <p className="last-update">
@@ -199,25 +260,22 @@ function Books() {
       <div className="sort-container">
         <select
           value={sort}
-          onChange={(e) =>
-            setSort(e.target.value)
-          }
+          onChange={(e) => {
+
+        setSort(e.target.value);
+
+        sessionStorage.setItem(
+          "sort",
+          e.target.value
+        );
+
+        }}
         >
-          <option value="">
-            Sort By
-          </option>
-          <option value="az">
-            Title A-Z
-          </option>
-          <option value="za">
-            Title Z-A
-          </option>
-          <option value="new">
-            Newest
-          </option>
-          <option value="old">
-            Oldest
-          </option>
+          <option value="">Sort By</option>
+          <option value="az">Title A-Z</option>
+          <option value="za">Title Z-A</option>
+          <option value="new">Newest</option>
+          <option value="old">Oldest</option>
         </select>
       </div>
 
@@ -248,7 +306,6 @@ function Books() {
 
                 <div className="book-content">
                   <h3>{book.title}</h3>
-
                   <p>{book.author}</p>
                 </div>
               </div>
@@ -272,11 +329,7 @@ function Books() {
 
         <div className="stat-card">
           <h2>
-            {
-              books.filter(
-                (book) => book.first_publish_year
-              ).length
-            }
+            {books.filter((book) => book.first_publish_year).length}
           </h2>
           <p>Published Books</p>
         </div>
@@ -292,33 +345,30 @@ function Books() {
         <>
           <div className="book-container">
 
-            {filteredBooks.map((book) => (
+            {filteredBooks.map((book,index) => (
 
               <BookCard
-                key={book.key}
-                id={book.key}
-                title={book.title}
-                author={
-                  book.author_name
-                    ? book.author_name.join(", ")
-                    : "Unknown Author"
-                }
-                price={
-                  book.first_publish_year || "N/A"
-                }
-                image={
-                  book.cover_i
-                    ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
-                    : "https://via.placeholder.com/180x250?text=No+Cover"
-                }
-                favorite={favorites.includes(book.key)}
-                onFavorite={() =>
-                  toggleFavorite(book.key)
-                }
-                onDelete={() =>
-                  deleteBook(book.key)
-                }
-              />
+                  key={book.key}
+                  id={index}
+                  title={book.title}
+                  author={
+                    book.author_name
+                      ? book.author_name.join(", ")
+                      : book.author || "Unknown Author"
+                  }
+                  price={book.first_publish_year || "N/A"}
+                  image={
+                    book.cover
+                      ? book.cover
+                      : book.cover_i
+                      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
+                      : "https://via.placeholder.com/180x250?text=No+Cover"
+                  }
+                  favorite={favorites.includes(book.key)}
+                  onFavorite={() => toggleFavorite(book.key)}
+                  onDelete={() => deleteBook(book.key)}
+                  isLocal={!book.author_name}
+                />
 
             ))}
 
@@ -327,6 +377,7 @@ function Books() {
           <BookTable books={filteredBooks} />
         </>
       )}
+
     </div>
   );
 }
