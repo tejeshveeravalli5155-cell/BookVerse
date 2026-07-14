@@ -1,0 +1,153 @@
+/* ===========================
+   Login Page
+=========================== */
+
+.login-container {
+    width: 400px;
+    margin: 70px auto;
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    transition: 0.3s;
+}
+
+.login-container h1 {
+    color: #2563eb;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+/* ===========================
+   Inputs
+=========================== */
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+.login-container input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-container button:hover {
+    background: #1d4ed8;
+}
+
+/* ===========================
+   Register Link
+=========================== */
+
+.register-link {
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+.register-link a {
+    color: #2563eb;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* ===========================
+   Error / Success
+=========================== */
+
+.error {
+    color: red;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.success {
+    color: green;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* ===========================
+   Dark Theme
+=========================== */
+
+.dark-theme .login-container {
+    background: #2d2d2d;
+    color: white;
+}
+
+.dark-theme .login-container h1 {
+    color: #60a5fa;
+}
+
+.dark-theme .login-container input {
+    background: #444;
+    color: white;
+    border: 1px solid #666;
+}
+
+.dark-theme .login-container input::placeholder {
+    color: #cccccc;
+}
+
+.dark-theme .login-container button {
+    background: #2563eb;
+}
+
+.dark-theme .login-container button:hover {
+    background: #1d4ed8;
+}
+
+.dark-theme .register-link a {
+    color: #60a5fa;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 768px) {
+
+    .login-container {
+        width: 90%;
+        padding: 25px;
+    }
+
+    .login-container h1 {
+        font-size: 28px;
+    }
+
+    .login-container input,
+    .login-container button {
+        font-size: 15px;
+    }
+
+}
