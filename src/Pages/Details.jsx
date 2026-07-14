@@ -9,36 +9,73 @@ function Details() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://openlibrary.org/search.json?q=programming&limit=20")
-      .then((res) => res.json())
-      .then((data) => {
-        const selectedBook = data.docs[id];
+    async function loadBook() {
+      setLoading(true);
+
+      try {
+        // Fetch API books
+        const response = await fetch(
+          "https://openlibrary.org/search.json?q=programming&limit=20"
+        );
+
+        const data = await response.json();
+
+        // Load Local Storage books
+        const localBooks =
+          JSON.parse(localStorage.getItem("myBooks")) || [];
+
+        // Combine both lists
+        const allBooks = [...localBooks, ...data.docs];
+
+        const selectedBook = allBooks[Number(id)];
+
         setBook(selectedBook);
-        setLoading(false);
-      });
+      } catch (error) {
+        console.error(error);
+      }
+
+      setLoading(false);
+    }
+
+    loadBook();
   }, [id]);
 
   if (loading) {
-    return <h2 style={{ textAlign: "center" }}>Loading...</h2>;
+    return (
+      <h2 style={{ textAlign: "center", marginTop: "40px" }}>
+        Loading...
+      </h2>
+    );
   }
 
   if (!book) {
-    return <h2 style={{ textAlign: "center" }}>Book Not Found</h2>;
+    return (
+      <h2 style={{ textAlign: "center", marginTop: "40px" }}>
+        Book Not Found 📚
+      </h2>
+    );
   }
 
   return (
     <div
       style={{
-        padding: "30px",
         maxWidth: "900px",
-        margin: "auto",
+        margin: "40px auto",
+        padding: "30px",
+        background: "#fff",
+        borderRadius: "12px",
+        boxShadow: "0 5px 15px rgba(0,0,0,.2)",
       }}
     >
-      <h1>Book Details</h1>
+      <h1 style={{ marginBottom: "20px" }}>
+        📖 Book Details
+      </h1>
 
       <img
         src={
-          book.cover_i
+          book.cover
+            ? book.cover
+            : book.cover_i
             ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
             : "https://via.placeholder.com/250x350?text=No+Cover"
         }
@@ -47,6 +84,7 @@ function Details() {
           width: "250px",
           display: "block",
           marginBottom: "20px",
+          borderRadius: "10px",
         }}
       />
 
@@ -56,11 +94,11 @@ function Details() {
         <strong>Author:</strong>{" "}
         {book.author_name
           ? book.author_name.join(", ")
-          : "Unknown"}
+          : book.author || "Unknown Author"}
       </p>
 
       <p>
-        <strong>First Published:</strong>{" "}
+        <strong>Published:</strong>{" "}
         {book.first_publish_year || "N/A"}
       </p>
 
@@ -74,15 +112,21 @@ function Details() {
       <p>
         <strong>Publisher:</strong>{" "}
         {book.publisher
-          ? book.publisher[0]
+          ? Array.isArray(book.publisher)
+            ? book.publisher[0]
+            : book.publisher
           : "N/A"}
       </p>
 
       <button
         onClick={() => navigate(-1)}
         style={{
-          marginTop: "20px",
+          marginTop: "25px",
           padding: "10px 20px",
+          background: "#2563eb",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
           cursor: "pointer",
         }}
       >
