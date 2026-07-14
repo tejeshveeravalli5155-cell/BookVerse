@@ -1,46 +1,71 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 
 function Navbar() {
+
   const navigate = useNavigate();
 
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem("theme")) || false;
+  } catch {
+    return false;
+  }
+});
 
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Books", path: "/books" },
-    { name: "Dashboard", path: "/dashboard" },
-    { name: "Login", path: "/login" },
-    { name: "Register", path: "/register" }
-  ];
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about" },
+  { name: "Books", path: "/books" },
+  { name: "Add Book", path: "/add-book" },
+  { name: "Dashboard", path: "/dashboard" },
+  { name: "Login", path: "/login" },
+  { name: "Register", path: "/register" },
+];
+  useEffect(() => {
+
+    localStorage.setItem(
+      "theme",
+      JSON.stringify(darkMode)
+    );
+
+    if (darkMode) {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+
+  }, [darkMode]);
 
   function toggleTheme() {
     setDarkMode(!darkMode);
-
-    if (!darkMode) {
-      document.body.style.backgroundColor = "#1e1e1e";
-      document.body.style.color = "white";
-    } else {
-      document.body.style.backgroundColor = "white";
-      document.body.style.color = "black";
-    }
   }
 
   function logout() {
-    localStorage.removeItem("isLoggedIn");
+
+    localStorage.removeItem("user");
+
+    sessionStorage.clear();
+
+    alert("Logged out Successfully!");
+
     navigate("/login");
+
   }
 
   return (
+
     <nav className="navbar">
 
       <h2>📚 BookVerse</h2>
 
       <ul>
+
         {navItems.map((item) => (
+
           <li key={item.path}>
+
             <NavLink
               to={item.path}
               className={({ isActive }) =>
@@ -49,8 +74,11 @@ function Navbar() {
             >
               {item.name}
             </NavLink>
+
           </li>
+
         ))}
+
       </ul>
 
       <div className="nav-buttons">
@@ -66,7 +94,9 @@ function Navbar() {
       </div>
 
     </nav>
+
   );
+
 }
 
 export default Navbar;
