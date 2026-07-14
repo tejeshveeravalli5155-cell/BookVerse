@@ -11,16 +11,16 @@ function BookCard({
   favorite,
   onFavorite,
   onDelete,
+  isLocal,
 }) {
 
   function saveRecentlyViewed() {
+
     let recent =
       JSON.parse(localStorage.getItem("recentBooks")) || [];
 
-    // Remove duplicate if already exists
     recent = recent.filter((book) => book.id !== id);
 
-    // Add current book to the beginning
     recent.unshift({
       id,
       title,
@@ -28,7 +28,6 @@ function BookCard({
       image,
     });
 
-    // Keep only last 5 books
     recent = recent.slice(0, 5);
 
     localStorage.setItem(
@@ -39,12 +38,14 @@ function BookCard({
 
   return (
     <div className="book-card">
+
       <img
         src={image}
         alt={title}
       />
 
       <div className="book-content">
+
         <h3>{title}</h3>
 
         <p>
@@ -52,9 +53,11 @@ function BookCard({
         </p>
 
         <h4>{price}</h4>
+
       </div>
 
       <div className="button-group">
+
         <Button text="Buy Now" />
 
         <Link
@@ -65,6 +68,14 @@ function BookCard({
             View Details
           </button>
         </Link>
+
+        {isLocal && (
+          <Link to={`/edit-book/${id}`}>
+            <button className="edit-btn">
+              ✏ Edit
+             </button>
+          </Link>
+        )}
 
         <button
           className="favorite-btn"
@@ -79,7 +90,9 @@ function BookCard({
         >
           Delete
         </button>
+
       </div>
+
     </div>
   );
 }
