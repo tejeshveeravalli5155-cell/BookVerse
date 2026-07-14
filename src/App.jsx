@@ -17,11 +17,12 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import Details from "./Pages/Details";
 import NotFound from "./Pages/NotFound";
+import AddBook from "./Pages/AddBook";
+import EditBook from "./Pages/EditBook";
 
 function App() {
   return (
     <Routes>
-
       <Route path="/" element={<Layout />}>
 
         <Route index element={<Home />} />
@@ -33,6 +34,8 @@ function App() {
         <Route path="login" element={<Login />} />
 
         <Route path="register" element={<Register />} />
+
+        <Route path="add-book" element={<AddBook />} />
 
         <Route
           path="dashboard"
@@ -49,6 +52,7 @@ function App() {
         </Route>
 
         <Route path="details/:id" element={<Details />} />
+        <Route path="edit-book/:id" element={<EditBook />} />
 
       </Route>
 
