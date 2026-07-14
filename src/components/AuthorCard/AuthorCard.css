@@ -1,0 +1,13 @@
+.author-card{
+    width:180px;
+    text-align:center;
+    padding:20px;
+    background:white;
+    border-radius:10px;
+    box-shadow:0 0 8px gray;
+}
+
+.author-card img{
+    border-radius:50%;
+    margin-bottom:10px;
+}

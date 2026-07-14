@@ -1,0 +1,262 @@
+/* ===========================
+   Books Page
+=========================== */
+
+.books-page{
+    padding:30px;
+    background:#f5f5f5;
+    min-height:100vh;
+}
+
+.books-page h1{
+    text-align:center;
+    margin-bottom:25px;
+    color:#1f2937;
+}
+
+/* ===========================
+   Search
+=========================== */
+
+.search-box{
+    display:block;
+    width:60%;
+    max-width:500px;
+    margin:20px auto;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    font-size:16px;
+}
+
+.search-box:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 5px rgba(37,99,235,.3);
+}
+
+/* ===========================
+   Refresh Button
+=========================== */
+
+.refresh-btn{
+    display:block;
+    margin:20px auto;
+    padding:12px 24px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+.refresh-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-2px);
+}
+
+.refresh-btn:disabled{
+    background:gray;
+    cursor:not-allowed;
+}
+
+/* ===========================
+   Last Updated
+=========================== */
+
+.last-update{
+    text-align:center;
+    color:#555;
+    margin-bottom:20px;
+    font-size:15px;
+}
+
+/* ===========================
+   Sort
+=========================== */
+
+.sort-container{
+    display:flex;
+    justify-content:center;
+    margin-bottom:30px;
+}
+
+.sort-container select{
+    padding:10px 15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:16px;
+    cursor:pointer;
+}
+
+/* ===========================
+   Statistics
+=========================== */
+
+.stats{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin:35px 0;
+    flex-wrap:wrap;
+}
+
+.stat-card{
+    width:190px;
+    background:white;
+    padding:20px;
+    text-align:center;
+    border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,.15);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+/* ===========================
+   Book Container
+=========================== */
+
+.book-container{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+/* ===========================
+   Recently Viewed
+=========================== */
+
+.recent-title{
+    text-align:center;
+    margin-top:40px;
+    color:#1f2937;
+}
+
+.clear-btn{
+    display:block;
+    margin:15px auto 25px;
+    padding:10px 18px;
+    background:#dc2626;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.clear-btn:hover{
+    background:#b91c1c;
+    transform:translateY(-2px);
+}
+
+/* ===========================
+   Empty State
+=========================== */
+
+.empty{
+    text-align:center;
+    color:red;
+    margin-top:50px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.button-group{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:15px;
+    flex-wrap:wrap;
+}
+
+.view-btn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.view-btn:hover{
+    background:#1d4ed8;
+}
+
+.favorite-btn{
+    background:#fbbf24;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.favorite-btn:hover{
+    background:#f59e0b;
+}
+
+.delete-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:768px){
+
+    .search-box{
+        width:90%;
+    }
+
+    .stats{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .stat-card{
+        width:90%;
+        max-width:300px;
+    }
+
+    .button-group{
+        flex-direction:column;
+    }
+
+    .sort-container{
+        padding:0 20px;
+    }
+
+    .sort-container select{
+        width:100%;
+    }
+}
