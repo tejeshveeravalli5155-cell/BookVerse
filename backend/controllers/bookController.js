@@ -1,110 +1,123 @@
-import books from "../data/books.js";
+import Book from "../models/Book.js";
 
 // GET All Books
-export const getBooks = (req, res) => {
-  res.json(books);
+export const getBooks = async (req, res) => {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // GET Book By ID
-export const getBookById = (req, res) => {
-  const id = Number(req.params.id);
+export const getBookById = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
 
-  const book = books.find((b) => b.id === id);
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found",
+      });
+    }
 
-  if (!book) {
-    return res.status(404).json({
-      message: "Book not found",
-    });
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-
-  res.json(book);
 };
 
 // POST Book
-export const addBook = (req, res) => {
-  const { title, author, price } = req.body;
+export const addBook = async (req, res) => {
+  try {
+    const { title, author, price } = req.body;
 
-  if (!title || !author || !price) {
-    return res.status(400).json({
+    const book = await Book.create({
+      title,
+      author,
+      price,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Book Added Successfully",
+      data: book,
+    });
+  } catch (err) {
+    res.status(400).json({
       success: false,
-      message: "Title, Author and Price are required",
+      message: err.message,
     });
   }
-
-  if (typeof price !== "number") {
-    return res.status(400).json({
-      success: false,
-      message: "Price must be a number",
-    });
-  }
-
-  const newBook = {
-    id: books.length + 1,
-    title,
-    author,
-    price,
-  };
-
-  books.push(newBook);
-
-  res.status(201).json({
-    success: true,
-    message: "Book Added Successfully",
-    data: newBook,
-  });
 };
 
 // PUT Book
-export const updateBook = (req, res) => {
-  const id = Number(req.params.id);
+export const updateBook = async (req, res) => {
+  try {
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
-  const book = books.find((b) => b.id === id);
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found",
+      });
+    }
 
-  if (!book) {
-    return res.status(404).json({
-      message: "Book not found",
+    res.json({
+      success: true,
+      message: "Book Updated Successfully",
+      data: book,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
     });
   }
-
-  const { title, author, price } = req.body;
-
-  if (title) book.title = title;
-  if (author) book.author = author;
-  if (price) book.price = price;
-
-  res.json({
-    message: "Book Updated Successfully",
-    book,
-  });
 };
 
 // DELETE Book
-export const deleteBook = (req, res) => {
-  const id = Number(req.params.id);
+export const deleteBook = async (req, res) => {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
 
-  const index = books.findIndex((b) => b.id === id);
+    if (!book) {
+      return res.status(404).json({
+        message: "Book not found",
+      });
+    }
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: "Book not found",
+    res.json({
+      success: true,
+      message: "Book Deleted Successfully",
+      data: book,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
     });
   }
-
-  const deletedBook = books.splice(index, 1);
-
-  res.json({
-    message: "Book Deleted Successfully",
-    book: deletedBook,
-  });
 };
 
-// Search Books
-export const searchBooks = (req, res) => {
-  const { title } = req.query;
+// SEARCH
+export const searchBooks = async (req, res) => {
+  try {
+    const books = await Book.find({
+      title: {
+        $regex: req.query.title,
+        $options: "i",
+      },
+    });
 
-  const result = books.filter((book) =>
-    book.title.toLowerCase().includes(title.toLowerCase())
-  );
-
-  res.json(result);
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+    });
+  }
 };
