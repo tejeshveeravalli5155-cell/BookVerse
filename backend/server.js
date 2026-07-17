@@ -13,14 +13,30 @@ connectDB();
 // Middleware
 app.use(express.json());
 
-// Routes
+// Request Logging Middleware (Bonus)
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
+// Default Route
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
+    success: true,
     message: "📚 Welcome to BookVerse Backend API",
   });
 });
 
+// Book Routes
 app.use("/books", bookRoutes);
+
+// Invalid Route Handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
