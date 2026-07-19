@@ -36,18 +36,21 @@ function Home() {
           title="Atomic Habits"
           author="James Clear"
           price="₹499"
+          image="https://readerinbookland.com/cdn/shop/files/Visit-Website-or-DM-for-Order.jpg?v=1766089657"
         />
 
         <BookCard
           title="The Alchemist"
           author="Paulo Coelho"
           price="₹399"
+          image="https://m.media-amazon.com/images/I/81t+zASRmqL._SL1500_.jpg"
         />
 
         <BookCard
           title="Rich Dad Poor Dad"
           author="Robert Kiyosaki"
           price="₹450"
+          image="https://rukminim2.flixcart.com/image/1366/1366/xif0q/book/1/q/s/rich-dad-poor-dad-original-imahdwux2gckxpgm.jpeg?q=90"
         />
       </div>
 
