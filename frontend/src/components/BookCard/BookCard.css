@@ -103,3 +103,10 @@
 .edit-btn:hover{
     background:#d97706;
 }
+.book-image {
+  width: 180px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
