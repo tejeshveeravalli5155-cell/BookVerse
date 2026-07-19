@@ -1,72 +1,69 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import API from "../services/api";
 import "./AddBook.css";
 
 function EditBook() {
-
   const { id } = useParams();
-
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [year, setYear] = useState("");
+  const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // Load Book
   useEffect(() => {
-
-    const books =
-      JSON.parse(localStorage.getItem("myBooks")) || [];
-
-    const book = books.find(
-      (item) => item.key === id
-    );
-
-    if (book) {
-      setTitle(book.title);
-      setAuthor(book.author);
-      setYear(book.first_publish_year);
-      setImage(book.cover);
-    }
-
+    fetchBook();
   }, [id]);
 
-  function handleUpdate(e) {
+  const fetchBook = async () => {
+    try {
+      const response = await API.get(`/books/${id}`);
 
+      const book = response.data.data;
+
+      setTitle(book.title);
+      setAuthor(book.author);
+      setPrice(book.price);
+      setImage(book.image || "");
+
+    } catch (error) {
+      console.error(error);
+      alert("Book not found");
+      navigate("/books");
+    }
+  };
+
+  // Update Book
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
-    let books =
-      JSON.parse(localStorage.getItem("myBooks")) || [];
+    try {
+      setLoading(true);
 
-    books = books.map((book) => {
+      await API.put(`/books/${id}`, {
+        title,
+        author,
+        price: Number(price),
+        image,
+      });
 
-      if (book.key === id) {
+      alert("Book Updated Successfully");
 
-        return {
-          ...book,
-          title,
-          author,
-          first_publish_year: year,
-          cover: image,
-        };
+      navigate("/books");
 
-      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update book");
 
-      return book;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    });
-
-    localStorage.setItem(
-      "myBooks",
-      JSON.stringify(books)
-    );
-
-    alert("Book Updated Successfully!");
-
-    navigate("/books");
-
-  }
-    return (
+  return (
     <div className="add-book-container">
 
       <form
@@ -80,9 +77,7 @@ function EditBook() {
           type="text"
           placeholder="Book Title"
           value={title}
-          onChange={(e) =>
-            setTitle(e.target.value)
-          }
+          onChange={(e) => setTitle(e.target.value)}
           required
         />
 
@@ -90,19 +85,15 @@ function EditBook() {
           type="text"
           placeholder="Author Name"
           value={author}
-          onChange={(e) =>
-            setAuthor(e.target.value)
-          }
+          onChange={(e) => setAuthor(e.target.value)}
           required
         />
 
         <input
           type="number"
-          placeholder="Published Year"
-          value={year}
-          onChange={(e) =>
-            setYear(e.target.value)
-          }
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
           required
         />
 
@@ -110,13 +101,15 @@ function EditBook() {
           type="text"
           placeholder="Image URL"
           value={image}
-          onChange={(e) =>
-            setImage(e.target.value)
-          }
+          onChange={(e) => setImage(e.target.value)}
         />
 
-        <button type="submit">
-          Update Book
+
+        <button
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Updating..." : "Update Book"}
         </button>
 
       </form>
