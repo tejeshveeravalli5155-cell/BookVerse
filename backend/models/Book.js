@@ -25,6 +25,12 @@ const bookSchema = new mongoose.Schema(
       min: [1, "Price must be greater than 0"],
       max: [10000, "Price cannot exceed 10000"],
     },
+
+    image: {
+      type: String,
+      default: "https://placehold.co/180x250?text=No+Cover",
+    },
+    
   },
   {
     timestamps: true,
