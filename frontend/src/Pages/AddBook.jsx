@@ -1,66 +1,63 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 import "./AddBook.css";
 
 function AddBook() {
-
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [year, setYear] = useState("");
+  const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e) {
-
+  async function handleSubmit(e) {
     e.preventDefault();
 
-    if (
-      title.trim() === "" ||
-      author.trim() === "" ||
-      year.trim() === ""
-    ) {
-      alert("Please fill all fields.");
+    if (!title || !author || !price) {
+      alert("Please fill all required fields");
       return;
     }
 
-    const newBook = {
-      key: Date.now().toString(),
-      title,
-      author,
-      first_publish_year: year,
-      cover: image
-        ? image
-        : "https://via.placeholder.com/180x250?text=No+Cover",
-    };
+    try {
+      setLoading(true);
 
-    const oldBooks =
-      JSON.parse(localStorage.getItem("myBooks")) || [];
+      await API.post("/books", {
+        title,
+        author,
+        price: Number(price),
+        image,
+      });
 
-    oldBooks.unshift(newBook);
+      alert("Book Added Successfully");
 
-    localStorage.setItem(
-      "myBooks",
-      JSON.stringify(oldBooks)
-    );
+      navigate("/books");
 
-    alert("Book Added Successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add book");
 
-    navigate("/books");
-
+    } finally {
+      setLoading(false);
+    }
   }
-    return (
-    <div className="add-book-container">
 
+  return (
+    <div className="add-book-container">
       <h1>Add New Book</h1>
 
-      <form onSubmit={handleSubmit} className="add-book-form">
+      <form
+        className="add-book-form"
+        onSubmit={handleSubmit}
+      >
 
         <input
           type="text"
           placeholder="Book Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required
         />
 
         <input
@@ -68,28 +65,32 @@ function AddBook() {
           placeholder="Author Name"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
+          required
         />
 
         <input
           type="number"
-          placeholder="Published Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          required
         />
 
         <input
-          type="text"
+          type="url"
           placeholder="Book Image URL (Optional)"
           value={image}
           onChange={(e) => setImage(e.target.value)}
         />
 
-        <button type="submit">
-          Add Book
+        <button
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Adding..." : "Add Book"}
         </button>
 
       </form>
-
     </div>
   );
 }
