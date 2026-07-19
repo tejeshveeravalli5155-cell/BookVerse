@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import bookRoutes from "./routes/bookRoutes.js";
 
@@ -11,9 +12,10 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(cors());              // Enable CORS
 app.use(express.json());
 
-// Request Logging Middleware (Bonus)
+// Request Logging Middleware
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
