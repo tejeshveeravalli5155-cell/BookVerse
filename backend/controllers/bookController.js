@@ -59,12 +59,13 @@ export const getBookById = async (req, res) => {
 // ==========================
 export const addBook = async (req, res) => {
   try {
-    const { title, author, price } = req.body;
+    const { title, author, price , image} = req.body;
 
     const book = await Book.create({
       title,
       author,
       price,
+      image,
     });
 
     res.status(201).json({
