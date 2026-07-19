@@ -16,27 +16,32 @@ import Settings from "./Pages/Dashboard/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Details from "./Pages/Details";
-import NotFound from "./Pages/NotFound";
 import AddBook from "./Pages/AddBook";
 import EditBook from "./Pages/EditBook";
+import ReadBook from "./Pages/ReadBook";
+import NotFound from "./Pages/NotFound";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
 
+        {/* Home */}
         <Route index element={<Home />} />
 
+        {/* Public Pages */}
         <Route path="about" element={<About />} />
-
         <Route path="books" element={<Books />} />
-
         <Route path="login" element={<Login />} />
-
         <Route path="register" element={<Register />} />
 
+        {/* Book Pages */}
         <Route path="add-book" element={<AddBook />} />
+        <Route path="details/:id" element={<Details />} />
+        <Route path="edit-book/:id" element={<EditBook />} />
+        <Route path="read/:id" element={<ReadBook />} />
 
+        {/* Protected Dashboard */}
         <Route
           path="dashboard"
           element={
@@ -51,13 +56,10 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
-        <Route path="details/:id" element={<Details />} />
-        <Route path="edit-book/:id" element={<EditBook />} />
-
       </Route>
 
+      {/* 404 */}
       <Route path="*" element={<NotFound />} />
-
     </Routes>
   );
 }
