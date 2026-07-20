@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import bookRoutes from "./routes/bookRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -31,6 +33,10 @@ app.get("/", (req, res) => {
 
 // Book Routes
 app.use("/books", bookRoutes);
+// Cart Routes
+app.use("/cart", cartRoutes);
+// Order Routes
+app.use("/orders", orderRoutes);
 
 // Invalid Route Handler
 app.use((req, res) => {
