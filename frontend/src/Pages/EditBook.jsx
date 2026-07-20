@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import API from "../services/api";
 import "./AddBook.css";
+import { toast } from "react-toastify";
 
 function EditBook() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ function EditBook() {
 
     } catch (error) {
       console.error(error);
-      alert("Book not found");
+      toast.error("Book not found");
       navigate("/books");
     }
   };
@@ -50,13 +51,13 @@ function EditBook() {
         image,
       });
 
-      alert("Book Updated Successfully");
+      toast.success(" Book Updated Successfully");
 
       navigate("/books");
 
     } catch (error) {
       console.error(error);
-      alert("Failed to update book");
+      toast.error("Failed to update book");
 
     } finally {
       setLoading(false);

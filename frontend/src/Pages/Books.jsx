@@ -3,6 +3,7 @@ import API from "../services/api";
 import BookCard from "../components/BookCard/BookCard";
 import BookTable from "../components/BookTable/BookTable";
 import "./Books.css";
+import { toast } from "react-toastify";
 
 function Books() {
   const [books, setBooks] = useState([]);
@@ -77,10 +78,27 @@ const handleDelete = async (id) => {
       prev.filter((book) => book._id !== id)
     );
 
-    alert("Book Deleted Successfully");
+    toast.success("Book Deleted Successfully");
   } catch (error) {
     console.error(error);
-    alert("Failed to delete book");
+    toast.error("Failed to delete book");
+  }
+};
+const handleAddToCart = async (book) => {
+  try {
+
+    await API.post("/cart", {
+      bookId: book._id,
+    });
+
+    toast.success(` ${book.title} added to cart`);
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast.error("Failed to add book to cart");
+
   }
 };
   return (
@@ -137,7 +155,7 @@ const handleDelete = async (id) => {
           <div className="book-container">
 
             {books.map((book) => (
-              <BookCard
+             <BookCard
                 key={book._id}
                 id={book._id}
                 title={book.title}
@@ -145,6 +163,7 @@ const handleDelete = async (id) => {
                 price={book.price}
                 image={book.image}
                 onDelete={() => handleDelete(book._id)}
+                onAddToCart={() => handleAddToCart(book)}
               />
                 
               ))}

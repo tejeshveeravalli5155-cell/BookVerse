@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import "./AddBook.css";
+import { toast } from "react-toastify";
 
 function AddBook() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function AddBook() {
     e.preventDefault();
 
     if (!title || !author || !price) {
-      alert("Please fill all required fields");
+      toast.warning("Please fill all required fields");
       return;
     }
 
@@ -30,13 +31,13 @@ function AddBook() {
         image,
       });
 
-      alert("Book Added Successfully");
+      toast.success("Book Added Successfully");
 
       navigate("/books");
 
     } catch (error) {
       console.error(error);
-      alert("Failed to add book");
+      toast.error("Failed to add book");
 
     } finally {
       setLoading(false);

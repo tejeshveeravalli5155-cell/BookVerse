@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
 import sampleBooks from "../data/sampleBooks";
 import "./ReadBook.css";
+import { toast } from "react-toastify";
 
 function ReadBook() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ function ReadBook() {
       setBook(response.data.data);
     } catch (error) {
       console.error(error);
-      alert("Book not found");
+      toast.error("Book not found");
       navigate("/books");
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import "./Details.css";
+import { toast } from "react-toastify";
 
 function Details() {
   const { id } = useParams();
