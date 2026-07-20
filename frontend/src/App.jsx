@@ -7,6 +7,9 @@ import About from "./Pages/About";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Books from "./Pages/Books";
+import Cart from "./Pages/Cart";
+import Checkout from "./Pages/Checkout";
+import Orders from "./Pages/Orders";
 
 import Dashboard from "./Pages/Dashboard";
 import Overview from "./Pages/Dashboard/Overview";
@@ -34,6 +37,9 @@ function App() {
         <Route path="books" element={<Books />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="cart" element={<Cart />} />
+        <Route path="checkout" element={<Checkout />} />
+        <Route path="orders" element={<Orders />} />
 
         {/* Book Pages */}
         <Route path="add-book" element={<AddBook />} />

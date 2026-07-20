@@ -19,6 +19,7 @@ const navItems = [
   { name: "About", path: "/about" },
   { name: "Books", path: "/books" },
   { name: "Add Book", path: "/add-book" },
+  { name: "🛒 Cart", path: "/cart" },
   { name: "Dashboard", path: "/dashboard" },
   { name: "Login", path: "/login" },
   { name: "Register", path: "/register" },
