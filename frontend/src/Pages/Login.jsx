@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
+import { toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function Login() {
 
   function handleLogin() {
     if (username.trim() === "" || password.trim() === "") {
-      alert("Please enter Username and Password");
+      toast.warning("Please enter Username and Password");
       return;
     }
 
@@ -23,7 +24,7 @@ function Login() {
       })
     );
 
-    alert("Login Successful!");
+    toast.success("Welcome Back!");
 
     navigate("/dashboard");
   }

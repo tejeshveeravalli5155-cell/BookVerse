@@ -1,5 +1,4 @@
 import "./BookCard.css";
-import Button from "../Button/Button";
 import { Link } from "react-router-dom";
 
 function BookCard({
@@ -9,20 +8,20 @@ function BookCard({
   price,
   image,
   onDelete,
+  onAddToCart,
 }) {
-  console.log(image);
   return (
     <div className="book-card">
 
-     <img
-  src={
-    image && image.trim() !== ""
-      ? image
-      : "https://placehold.co/180x250?text=No+Cover"
-  }
-  alt={title}
-  className="book-image"
-/>
+      <img
+        src={
+          image && image.trim() !== ""
+            ? image
+            : "https://placehold.co/180x250?text=No+Cover"
+        }
+        alt={title}
+        className="book-image"
+      />
 
       <div className="book-content">
         <h3>{title}</h3>
@@ -36,11 +35,22 @@ function BookCard({
 
       <div className="button-group">
 
-        <Button text="Buy Now" />
+        <button
+          className="cart-btn"
+          onClick={onAddToCart}
+        >
+          🛒 Add to Cart
+        </button>
 
         <Link to={`/details/${id}`}>
           <button className="view-btn">
-            View Details
+            👁 View Details
+          </button>
+        </Link>
+
+        <Link to={`/read/${id}`}>
+          <button className="read-btn">
+            📖 Read Book
           </button>
         </Link>
 
@@ -56,12 +66,6 @@ function BookCard({
         >
           🗑 Delete
         </button>
-        
-<Link to={`/read/${id}`}>
-    <button className="read-btn">
-        📖 Read Book
-    </button>
-</Link>
 
       </div>
 

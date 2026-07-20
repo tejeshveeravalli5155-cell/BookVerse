@@ -23,12 +23,12 @@ function Register() {
       !password ||
       !confirmPassword
     ) {
-      alert("Please fill all fields.");
+      toast.warning("Please fill all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      toast.warning("Passwords do not match.");
       return;
     }
 
@@ -44,7 +44,7 @@ function Register() {
       JSON.stringify(user)
     );
 
-    alert("Registration Successful!");
+    toast.success("Registration Successful");
 
     navigate("/login");
   }
