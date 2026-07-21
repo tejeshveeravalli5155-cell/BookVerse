@@ -6,27 +6,29 @@ import {
   addBook,
   updateBook,
   deleteBook,
-  searchBooks,
 } from "../controllers/bookController.js";
 
 const router = express.Router();
 
-// Search (MUST COME BEFORE :id)
-router.get("/search", searchBooks);
-
-// Get All
+// GET All Books
+// Supports:
+// ?search=
+// ?page=
+// ?limit=
+// ?sort=
+// ?order=
 router.get("/", getBooks);
 
-// Get By ID
+// GET Book By ID
 router.get("/:id", getBookById);
 
-// Add
+// ADD Book
 router.post("/", addBook);
 
-// Update
+// UPDATE Book
 router.put("/:id", updateBook);
 
-// Delete
+// DELETE Book
 router.delete("/:id", deleteBook);
 
 export default router;
