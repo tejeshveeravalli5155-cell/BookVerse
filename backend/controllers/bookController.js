@@ -2,30 +2,63 @@ import mongoose from "mongoose";
 import Book from "../models/Book.js";
 
 // ==========================
-// GET All Books
+// GET ALL BOOKS
+// Search + Pagination + Sorting
 // ==========================
 export const getBooks = async (req, res) => {
+  
   try {
-    const books = await Book.find();
+    const {
+      search = "",
+      page = 1,
+      limit = 8,
+      sort = "createdAt",
+      order = "desc",
+    } = req.query;
+
+    const query = {
+      title: {
+        $regex: search,
+        $options: "i",
+      },
+    };
+
+    const total = await Book.countDocuments(query);
+
+    const sortOption = {
+      [sort]: order === "asc" ? 1 : -1,
+    };
+
+    const books = await Book.find(query)
+      .sort(sortOption)
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit));
 
     res.status(200).json({
       success: true,
       count: books.length,
+      total,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / Number(limit)),
       data: books,
     });
+
   } catch (err) {
+
     res.status(500).json({
       success: false,
       message: err.message,
     });
+
   }
 };
 
 // ==========================
-// GET Book By ID
+// GET BOOK BY ID
 // ==========================
 export const getBookById = async (req, res) => {
   try {
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
@@ -46,20 +79,24 @@ export const getBookById = async (req, res) => {
       success: true,
       data: book,
     });
+
   } catch (err) {
+
     res.status(500).json({
       success: false,
       message: err.message,
     });
+
   }
 };
 
 // ==========================
-// ADD Book
+// ADD BOOK
 // ==========================
 export const addBook = async (req, res) => {
   try {
-    const { title, author, price , image} = req.body;
+
+    const { title, author, price, image } = req.body;
 
     const book = await Book.create({
       title,
@@ -73,19 +110,23 @@ export const addBook = async (req, res) => {
       message: "Book Added Successfully",
       data: book,
     });
+
   } catch (err) {
+
     res.status(400).json({
       success: false,
       message: err.message,
     });
+
   }
 };
 
 // ==========================
-// UPDATE Book
+// UPDATE BOOK
 // ==========================
 export const updateBook = async (req, res) => {
   try {
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
@@ -114,19 +155,23 @@ export const updateBook = async (req, res) => {
       message: "Book Updated Successfully",
       data: book,
     });
+
   } catch (err) {
+
     res.status(500).json({
       success: false,
       message: err.message,
     });
+
   }
 };
 
 // ==========================
-// DELETE Book
+// DELETE BOOK
 // ==========================
 export const deleteBook = async (req, res) => {
   try {
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
@@ -148,38 +193,13 @@ export const deleteBook = async (req, res) => {
       message: "Book Deleted Successfully",
       data: book,
     });
+
   } catch (err) {
+
     res.status(500).json({
       success: false,
       message: err.message,
     });
-  }
-};
 
-// ==========================
-// SEARCH Books
-// GET /books/search?title=react
-// ==========================
-export const searchBooks = async (req, res) => {
-  try {
-    const { title } = req.query;
-
-    const books = await Book.find({
-      title: {
-        $regex: title || "",
-        $options: "i",
-      },
-    });
-
-    res.status(200).json({
-      success: true,
-      count: books.length,
-      data: books,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
   }
 };
