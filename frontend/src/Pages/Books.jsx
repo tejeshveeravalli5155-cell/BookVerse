@@ -10,32 +10,49 @@ function Books() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(8);
+  const [sort, setSort] = useState("createdAt");
+  const [order, setOrder] = useState("desc");
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch Books
   const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-      const url = search
-        ? `/books/search?title=${search}`
-        : "/books";
+    const response = await API.get("/books", {
+      params: {
+        search,
+        page,
+        limit,
+        sort,
+        order,
+      },
+    });
 
-      const response = await API.get(url);
+    setBooks(response.data.data);
+    setTotalPages(response.data.totalPages);
 
-      setBooks(response.data.data);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to connect to the server.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
 
-  useEffect(() => {
-    document.title = "BookVerse | Books";
+    console.error(err);
+    setError("Unable to connect to the server.");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
+
+useEffect(() => {
+  const timer = setTimeout(() => {
     fetchBooks();
-  }, []);
+  },1000);
+
+  return () => clearTimeout(timer);
+}, [search, page, sort, order]);
 
   // Search when button is clicked
   const handleSearch = () => {
@@ -44,10 +61,11 @@ function Books() {
 
   // Refresh
   const handleRefresh = () => {
-    setSearch("");
-    fetchBooks();
-  };
-
+  setSearch("");
+  setPage(1);
+  setSort("createdAt");
+  setOrder("desc");
+};
   if (loading) {
     return (
       <div className="books-page">
@@ -137,13 +155,58 @@ const handleAddToCart = async (book) => {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <button onClick={handleSearch}>
-          Search
-        </button>
+        <select
+    value={sort}
+    onChange={(e) => setSort(e.target.value)}
+>
+
+    <option value="createdAt">Newest</option>
+
+    <option value="title">Title</option>
+
+    <option value="price">Price</option>
+
+</select>
+
+<select
+    value={order}
+    onChange={(e) => setOrder(e.target.value)}
+>
+
+    <option value="asc">
+        Ascending
+    </option>
+
+    <option value="desc">
+        Descending
+    </option>
+
+</select>
 
         <button onClick={handleRefresh}>
           Refresh
         </button>
+        <div className="pagination">
+
+            <button
+            disabled={page===1}
+            onClick={()=>setPage(page-1)}
+            >
+            Previous
+            </button>
+
+            <span>
+            Page {page} of {totalPages}
+            </span>
+
+            <button
+            disabled={page===totalPages}
+            onClick={()=>setPage(page+1)}
+            >
+            Next
+            </button>
+
+          </div>
 
       </div>
 
