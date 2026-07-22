@@ -1,34 +1,78 @@
 .table-container{
     width:90%;
-    margin:30px auto;
+    margin:40px auto;
 }
 
 .table-container h2{
     text-align:center;
     margin-bottom:20px;
+    color:white;
+    font-size:28px;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
+    overflow:hidden;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
 }
 
 th,
 td{
-    border:1px solid #ddd;
-    padding:12px;
+    padding:14px;
     text-align:center;
+    border:1px solid rgba(255,255,255,.1);
 }
 
 th{
-    background:#1f2937;
+    background:#2563eb;
+    color:white;
+    font-size:17px;
+    font-weight:600;
+}
+
+/* Odd Rows */
+tbody tr:nth-child(odd){
+    background:#1f1f1f;
     color:white;
 }
 
-tr:nth-child(even){
-    background:#f2f2f2;
+/* Even Rows */
+tbody tr:nth-child(even){
+    background:#2b2b2b;
+    color:white;
 }
 
-tr:hover{
-    background:#ddd;
+/* Hover Effect */
+tbody tr:hover{
+    background:#3b82f6;
+    color:white;
+    transition:0.3s;
+}
+
+/* Price Column */
+td:last-child{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+/* Responsive */
+@media (max-width:768px){
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+}
+
+table{
+    min-width:700px;
+}
+
+th,
+td{
+    padding:10px;
+    font-size:14px;
+}
+
 }
