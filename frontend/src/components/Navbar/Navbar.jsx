@@ -1,42 +1,41 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import "./Navbar.css";
 
 function Navbar() {
-
   const navigate = useNavigate();
 
+  // Logged-in User
+  const user =
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(sessionStorage.getItem("user"));
+
   const [darkMode, setDarkMode] = useState(() => {
-  try {
-    return JSON.parse(localStorage.getItem("theme")) || false;
-  } catch {
-    return false;
-  }
-});
+    try {
+      return JSON.parse(localStorage.getItem("theme")) || false;
+    } catch {
+      return false;
+    }
+  });
 
-const navItems = [
-  { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
-  { name: "Books", path: "/books" },
-  { name: "Add Book", path: "/add-book" },
-  { name: "🛒 Cart", path: "/cart" },
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Login", path: "/login" },
-  { name: "Register", path: "/register" },
-];
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Books", path: "/books" },
+    { name: "Add Book", path: "/add-book" },
+    { name: "Cart", path: "/cart" },
+    { name: "Dashboard", path: "/dashboard" },
+  ];
+
   useEffect(() => {
-
-    localStorage.setItem(
-      "theme",
-      JSON.stringify(darkMode)
-    );
+    localStorage.setItem("theme", JSON.stringify(darkMode));
 
     if (darkMode) {
       document.body.classList.add("dark-theme");
     } else {
       document.body.classList.remove("dark-theme");
     }
-
   }, [darkMode]);
 
   function toggleTheme() {
@@ -44,19 +43,17 @@ const navItems = [
   }
 
   function logout() {
-
     localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
 
-    sessionStorage.clear();
-
-    alert("Logged out Successfully!");
+    toast.success("Logged out Successfully");
 
     navigate("/login");
 
+    window.location.reload();
   }
 
   return (
-
     <nav className="navbar">
 
       <h2>📚 BookVerse</h2>
@@ -64,9 +61,7 @@ const navItems = [
       <ul>
 
         {navItems.map((item) => (
-
           <li key={item.path}>
-
             <NavLink
               to={item.path}
               className={({ isActive }) =>
@@ -75,29 +70,63 @@ const navItems = [
             >
               {item.name}
             </NavLink>
-
           </li>
-
         ))}
+
+        {!user && (
+          <>
+            <li>
+              <NavLink to="/login">
+                Login
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/register">
+                Register
+              </NavLink>
+            </li>
+          </>
+        )}
 
       </ul>
 
       <div className="nav-buttons">
 
+        {user && (
+          <div className="user-info">
+
+            <img
+              src={`http://localhost:5000${user.image}`}
+              alt={user.name}
+              className="user-avatar"
+            />
+
+            <div>
+
+              <p>{user.name}</p>
+
+              <small>{user.email}</small>
+
+            </div>
+
+          </div>
+        )}
+
         <button onClick={toggleTheme}>
           {darkMode ? "☀ Light" : "🌙 Dark"}
         </button>
 
-        <button onClick={logout}>
-          Logout
-        </button>
+        {user && (
+          <button onClick={logout}>
+            Logout
+          </button>
+        )}
 
       </div>
 
     </nav>
-
   );
-
 }
 
 export default Navbar;
