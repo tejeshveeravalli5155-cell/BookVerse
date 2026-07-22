@@ -1,69 +1,131 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./Login.css";
 import { toast } from "react-toastify";
+import API from "../services/api";
+import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
-    if (username.trim() === "" || password.trim() === "") {
-      toast.warning("Please enter Username and Password");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.warning("Please enter Email and Password");
       return;
     }
 
-    // Save login data
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        username: username,
-        loggedIn: true,
-      })
-    );
+    try {
+      setLoading(true);
 
-    toast.success("Welcome Back!");
+      const response = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
-    navigate("/dashboard");
-  }
+      const user = response.data.data;
+
+      if (rememberMe) {
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        sessionStorage.setItem("user", JSON.stringify(user));
+      }
+
+      toast.success("Login Successful");
+
+      navigate("/dashboard");
+
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        error.response?.data?.message ||
+        "Invalid email or password"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="login-container">
 
-      <h1>Login</h1>
+      <div className="login-box">
 
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+       
 
-      <br />
-      <br />
+        <h1> Login</h1>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <p className="login-subtitle">
+          Welcome back to BookVerse
+        </p>
 
-      <br />
-      <br />
+        <form onSubmit={handleLogin}>
 
-      <button onClick={handleLogin}>
-        Login
-      </button>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <p className="register-link">
-        Not Registered?{" "}
-        <Link to="/register">
-          Register Here
-        </Link>
-      </p>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <div className="options">
+
+            <label className="show-password">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() =>
+                  setShowPassword(!showPassword)
+                }
+              />
+              Show Password
+            </label>
+
+            <label className="remember-me">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={() =>
+                  setRememberMe(!rememberMe)
+                }
+              />
+              Remember Me
+            </label>
+
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Logging In..." : "Login"}
+          </button>
+
+        </form>
+
+        <p className="register-link">
+          Not Registered?
+          <Link to="/register">
+            {" "}Register Here
+          </Link>
+        </p>
+
+      </div>
 
     </div>
   );
