@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 // ==========================
@@ -6,7 +7,6 @@ import User from "../models/User.js";
 // ==========================
 export const registerUser = async (req, res) => {
   try {
-
     const { name, email, mobile, password } = req.body;
 
     if (!name || !email || !mobile || !password) {
@@ -25,21 +25,23 @@ export const registerUser = async (req, res) => {
         message: "Email already registered",
       });
     }
-    const existingMobile = await User.findOne({
-  mobile,
-});
 
-if (existingMobile) {
-  return res.status(400).json({
-    success: false,
-    message: "Mobile number already registered",
-  });
-}
+    // Check Duplicate Mobile
+    const existingMobile = await User.findOne({
+      mobile,
+    });
+
+    if (existingMobile) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number already registered",
+      });
+    }
 
     // Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Image Path
+    // Image
     const image = req.file
       ? `/uploads/${req.file.filename}`
       : "/uploads/default.png";
@@ -59,8 +61,8 @@ if (existingMobile) {
       data: {
         id: user._id,
         name: user.name,
-        mobile: user.mobile,
         email: user.email,
+        mobile: user.mobile,
         image: user.image,
       },
     });
@@ -92,8 +94,8 @@ export const loginUser = async (req, res) => {
 
     // Find User
     const user = await User.findOne({ email });
+    
 
-    // Generic Error Message
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -118,15 +120,61 @@ export const loginUser = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
+    // ==========================
+    // Generate JWT Token
+    // ==========================
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn:
+          process.env.JWT_EXPIRES_IN || "7d",
+      }
+    );
+
     res.status(200).json({
       success: true,
       message: "Login Successful",
+      token,
       data: {
         id: user._id,
         name: user.name,
         email: user.email,
         image: user.image,
+        role: user.role,
       },
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+// ==========================
+// GET PROFILE
+// ==========================
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
     });
 
   } catch (error) {
