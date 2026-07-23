@@ -10,6 +10,13 @@ function BookCard({
   onDelete,
   onAddToCart,
 }) {
+  // Logged-in User
+  const user =
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(sessionStorage.getItem("user"));
+
+  const isAdmin = user?.role === "admin";
+
   return (
     <div className="book-card">
 
@@ -24,6 +31,7 @@ function BookCard({
       />
 
       <div className="book-content">
+
         <h3>{title}</h3>
 
         <p>
@@ -31,6 +39,7 @@ function BookCard({
         </p>
 
         <h4>₹{price}</h4>
+
       </div>
 
       <div className="button-group">
@@ -54,18 +63,24 @@ function BookCard({
           </button>
         </Link>
 
-        <Link to={`/edit-book/${id}`}>
-          <button className="edit-btn">
-            ✏ Edit
-          </button>
-        </Link>
+        {/* Admin Only */}
 
-        <button
-          className="delete-btn"
-          onClick={onDelete}
-        >
-          🗑 Delete
-        </button>
+        {isAdmin && (
+          <>
+            <Link to={`/edit-book/${id}`}>
+              <button className="edit-btn">
+                ✏ Edit
+              </button>
+            </Link>
+
+            <button
+              className="delete-btn"
+              onClick={onDelete}
+            >
+              🗑 Delete
+            </button>
+          </>
+        )}
 
       </div>
 
