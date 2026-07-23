@@ -1,10 +1,14 @@
 import "./AuthorCard.css";
 
-function AuthorCard({ name }) {
+function AuthorCard({ name, image }) {
   return (
     <div className="author-card">
       <img
-        src="https://via.placeholder.com/120"
+        src={
+          image && image.trim() !== ""
+            ? image
+            : "https://placehold.co/120x120?text=Author"
+        }
         alt={name}
       />
 
