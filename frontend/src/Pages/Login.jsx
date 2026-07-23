@@ -30,12 +30,27 @@ function Login() {
         password,
       });
 
-      const user = response.data.data;
+      // JWT Token
+      const token = response.data.token;
 
+      // User Data
+      const user = {
+        ...response.data.data,
+        token,
+        loggedIn: true,
+      };
+
+      // Remember Me
       if (rememberMe) {
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem(
+          "user",
+          JSON.stringify(user)
+        );
       } else {
-        sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem(
+          "user",
+          JSON.stringify(user)
+        );
       }
 
       toast.success("Login Successful");
@@ -43,14 +58,18 @@ function Login() {
       navigate("/dashboard");
 
     } catch (error) {
+
       console.error(error);
 
       toast.error(
         error.response?.data?.message ||
         "Invalid email or password"
       );
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
@@ -59,9 +78,7 @@ function Login() {
 
       <div className="login-box">
 
-       
-
-        <h1> Login</h1>
+        <h1>🔐 Login</h1>
 
         <p className="login-subtitle">
           Welcome back to BookVerse
@@ -73,19 +90,28 @@ function Login() {
             type="email"
             placeholder="Email Address"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
           />
 
           <input
-            type={showPassword ? "text" : "password"}
+            type={
+              showPassword
+                ? "text"
+                : "password"
+            }
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
           />
 
           <div className="options">
 
             <label className="show-password">
+
               <input
                 type="checkbox"
                 checked={showPassword}
@@ -93,10 +119,13 @@ function Login() {
                   setShowPassword(!showPassword)
                 }
               />
+
               Show Password
+
             </label>
 
             <label className="remember-me">
+
               <input
                 type="checkbox"
                 checked={rememberMe}
@@ -104,7 +133,9 @@ function Login() {
                   setRememberMe(!rememberMe)
                 }
               />
+
               Remember Me
+
             </label>
 
           </div>
@@ -113,16 +144,21 @@ function Login() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Logging In..." : "Login"}
+            {loading
+              ? "Logging In..."
+              : "Login"}
           </button>
 
         </form>
 
         <p className="register-link">
+
           Not Registered?
+
           <Link to="/register">
             {" "}Register Here
           </Link>
+
         </p>
 
       </div>
