@@ -31,6 +31,15 @@ const userSchema = new mongoose.Schema(
       default: "/uploads/default.png",
     },
 
+    // ==========================
+    // Role Based Authorization
+    // ==========================
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+
     lastLogin: {
       type: Date,
     },
