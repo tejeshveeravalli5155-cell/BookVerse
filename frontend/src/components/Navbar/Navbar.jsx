@@ -11,6 +11,8 @@ function Navbar() {
     JSON.parse(localStorage.getItem("user")) ||
     JSON.parse(sessionStorage.getItem("user"));
 
+    
+
   const [darkMode, setDarkMode] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("theme")) || false;
@@ -19,14 +21,21 @@ function Navbar() {
     }
   });
 
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Books", path: "/books" },
-    { name: "Add Book", path: "/add-book" },
-    { name: "Cart", path: "/cart" },
-    { name: "Dashboard", path: "/dashboard" },
-  ];
+
+const isAdmin = user?.role === "admin";
+
+// Navigation Items
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about" },
+  { name: "Books", path: "/books" },
+  { name: "Cart", path: "/cart" },
+  { name: "Dashboard", path: "/dashboard" },
+
+  ...(isAdmin
+    ? [{ name: "Add Book", path: "/add-book" }]
+    : []),
+];
 
   useEffect(() => {
     localStorage.setItem("theme", JSON.stringify(darkMode));
