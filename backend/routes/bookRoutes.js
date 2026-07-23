@@ -8,27 +8,48 @@ import {
   deleteBook,
 } from "../controllers/bookController.js";
 
+import authMiddleware from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
+
 const router = express.Router();
 
-// GET All Books
-// Supports:
-// ?search=
-// ?page=
-// ?limit=
-// ?sort=
-// ?order=
+// ==========================
+// Public Routes
+// ==========================
+
+
+// Get All Books
 router.get("/", getBooks);
 
-// GET Book By ID
+// Get Book By ID
 router.get("/:id", getBookById);
 
-// ADD Book
-router.post("/", addBook);
+// ==========================
+// Admin Protected Routes
+// ==========================
 
-// UPDATE Book
-router.put("/:id", updateBook);
+// Add Book
+router.post(
+  "/",
+  authMiddleware,
+  roleMiddleware("admin"),
+  addBook
+);
 
-// DELETE Book
-router.delete("/:id", deleteBook);
+// Update Book
+router.put(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("admin"),
+  updateBook
+);
+
+// Delete Book
+router.delete(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("admin"),
+  deleteBook
+);
 
 export default router;
